@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!-- chart js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- my css -->
+  <link rel="stylesheet" type="text/css" href="/results.css">
+
+  <!-- font -->
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+
+  <title>CodeForces Analizrrr</title>
+</head>
+
+<body>
+  
+  <!-- navbar to display user -->
+  
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <span id="username"><%=user%></span>
+      <ul class="nav navbar-nav navbar-left">
+            <li><a href="/">CF Analizrrr</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+            <li><a href="/">Try again</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- //////////////// 1. ratingGraph ///////////////// -->
+
+  <div class="container" >
+    <canvas id="ratingGraph"></canvas>
+  </div>
+
+  <script>
+    let ratingGraph = document.getElementById('ratingGraph').getContext('2d');
+
+    let colors = generateRandomColors(100);
+
+    Chart.defaults.global.defaultFontFamily = 'Lato';
+    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontColor = '#777';
+
+    let ratingGraphChart = new Chart(ratingGraph, {
+      type:'line', 
+      data:{
+        labels: <%- JSON.stringify(contestid); %>,
+        datasets:[{
+          data: <%- JSON.stringify(points); %>,
+          backgroundColor: colors,
+          borderWidth:0,
+          borderColor:'#777',
+          hoverBorderWidth:2,
+          hoverBorderColor:'#777',
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: 'rgba(20, 50, 150, 0.6)'
+        }]
+      },
+      options:{
+        title:{
+          display:true,
+          text:'Rating Graph',
+          fontSize:25,
+          padding: 30
+        },
+        legend:{
+          display:false
+        },
+        layout:{
+          padding:{
+            left:50,
+            right:0,
+            bottom:0,
+            top:0
+          }
+        },
+        tooltips:{
+          enabled:true
+        }
+      }
+    });
+
+    function generateRandomColors(num) {
+      var arr = [];
+      for(var i = 0; i < num; i ++) {
+        arr.push(randomColor());
+      }
+      return arr;
+    }
+
+    function randomColor() {
+      var r = Math.floor(Math.random() * 256);
+      var g = Math.floor(Math.random() * 256);
+      var b = Math.floor(Math.random() * 256);
+      return "rgba(" + r + ", " + g + ", " + b + ", 0.7)";
+    }
+  </script>
+  
+  <div style="height: 80px"></div>
+  <hr>
+
+  <!-- ///////////////////// 2. ratingDistribution ////////////////////// -->
+
+  <div class="container" >
+    <canvas id="ratingDistribution"></canvas>
+  </div>
+
+  <script>
+    let ratingDistribution = document.getElementById('ratingDistribution').getContext('2d');
+
+    colors = generateShadeColors(100);
+
+    Chart.defaults.global.defaultFontFamily = 'Lato';
+    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontColor = '#777';
+
+    let ratingDistributionChart = new Chart(ratingDistribution, {
+      type:'bar',
+      data:{
+        labels: <%- JSON.stringify(rating); %>,
+        datasets:[{
+          data: <%- JSON.stringify(ques); %>,
+          backgroundColor: colors,
+          borderWidth:0,
+          borderColor:'#777',
+          hoverBorderWidth:2,
+          hoverBorderColor:'#777'
+        }]
+      },
+      options:{
+        title:{
+          display:true,
+          text:'Rating Distribution of Problems Solved',
+          fontSize:25,
+          padding: 30
+        },
+        legend:{
+          display:false
+        },
+        layout:{
+          padding:{
+            left:50,
+            right:0,
+            bottom:0,
+            top:0
+          }
+        },
+        tooltips:{
+          enabled:true
+        }
+      }
+    });
+    
+    function generateShadeColors(num) {
+      var arr = [];
+      var r = 0, g = 250, b = 33;
+      for(var i = 0; i < num; i ++) {
+        arr.push("rgba(" + r + ", " + g + ", " + b + ", 0.7)");
+        g = g - 10;
+        if(g < 50)  g = 50;
+      }
+      return arr;
+    }
+    
+  </script>
+
+  <div style="height: 80px"></div>
+  <hr>
+
+
+     <!-- ///////////////////// 3. tagDistribution ////////////////////// -->
+
+  <div class="container" >
+    <canvas id="tagDistribution" width="400" height="400"></canvas>
+  </div>
+
+  <script>
+    let tagDistribution = document.getElementById('tagDistribution').getContext('2d');
+
+    colors = generateRandomColors(100);
+
+    Chart.defaults.global.defaultFontFamily = 'Lato';
+    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontColor = '#777';
+
+    let tagDistributionChart = new Chart(tagDistribution, {
+      type:'doughnut', 
+      data:{
+        labels: <%- JSON.stringify(tag); %>,
+        datasets:[{
+          data: <%- JSON.stringify(tagCnt); %>,
+          backgroundColor: colors,
+          borderWidth:0,
+          borderColor:'#777',
+          hoverBorderWidth:2,
+          hoverBorderColor:'#777'
+        }]
+      },
+      options:{
+        responsive: true,
+        maintainAspectRatio: false,
+        title:{
+          display:true,
+          text:'Strong Topics',
+          fontSize:25,
+          padding: 30
+        },
+        legend:{
+          display:true,
+          position:'right',
+          labels:{
+            boxWidth: 30,
+            fontSize: 10,
+            padding: 6,
+            fontColor:'#000'
+          }
+        },
+        layout:{
+          padding:{
+            left:50,
+            right:0,
+            bottom:0,
+            top:0
+          }
+        },
+        tooltips:{
+          enabled:true
+        }
+      }
+    });
+  </script>
+
+  <div style="height: 80px"></div>
+  <hr>
+
+   <!-- ///////////////////// 4. verdictDistribution ////////////////////// -->
+
+  <div class="container">
+    <canvas id="verdictDistribution" width="400" height="400"></canvas>
+  </div>
+
+  <script>
+    let verdictDistribution = document.getElementById('verdictDistribution').getContext('2d');
+
+    colors = generateRandomColors(100);
+    colors.unshift('rgba(230, 0, 38, 0.7)');
+    colors.unshift('rgba(0, 230, 27, 0.7)');
+
+    Chart.defaults.global.defaultFontFamily = 'Lato';
+    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontColor = '#777';
+
+    let verdictDistributionChart = new Chart(verdictDistribution, {
+      type:'pie', 
+      data:{
+        labels: <%- JSON.stringify(verdict); %>,
+        datasets:[{
+          data: <%- JSON.stringify(verdictCnt); %>,
+          backgroundColor: colors,
+          borderWidth:1,
+          borderColor:'#777',
+          hoverBorderWidth:2,
+          hoverBorderColor:'#000'
+        }]
+      },
+      options:{
+        responsive: true,
+        maintainAspectRatio: false,
+        title:{
+          display:true,
+          text:'Accuracy of Submissions',
+          fontSize:25,
+          padding: 30
+        },
+        legend:{
+          display:true,
+          position:'right',
+          labels:{
+            fontColor:'#777'
+          }
+        },
+        layout:{
+          padding:{
+            left:50,
+            right:0,
+            bottom:0,
+            top:0
+          }
+        },
+        tooltips:{
+          enabled:true
+        }
+      }
+    });
+  </script>
+
+ <div style="height: 80px"></div>
+
+
+</body>
+</html>
