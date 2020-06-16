@@ -17,6 +17,9 @@ app.get("/findresults", function(req, res) {
 	res.redirect('/ratingGraph');
 });
 
+
+/// 1. Rating Graph ///
+
 var points = [];
 var contestid = [];
 
@@ -25,11 +28,20 @@ app.get("/ratingGraph", function(req, res) {
 	request(url, function(error, response, body){
 		if(!error && response.statusCode == 200) {
 			data = JSON.parse(body);
+			if(data["status"] == "FAILED") {
+				res.render("errorpage");
+			}
 			calcRatingGraph();
 			res.redirect('/ratingDistribution');
 		}
+		else {
+			res.render("errorpage")
+		}
 	});
 });
+
+
+/// 2. Rating Distribution ///
 
 var rating = [];
 var ques = [];
@@ -45,6 +57,9 @@ app.get("/ratingDistribution", function(req, res) {
 	});
 });
 
+
+/// 3. Tag Distribution ///
+
 var tag = [];
 var tagCnt = [];
 
@@ -53,6 +68,9 @@ app.get("/tagDistribution", function(req, res) {
 	res.redirect('/verdictDistribution');
 });
 
+
+/// 4. Verdict Distribution ///
+
 var verdict = [];
 var verdictCnt = [];
 
@@ -60,6 +78,9 @@ app.get("/verdictDistribution", function(req, res) {
 	calcVerdictDistrbution();
 	res.redirect('/showResults');
 });
+
+
+/// Show Results ///
 
 app.get("/showResults", function(req, res) {
 	res.render("results", {
@@ -71,8 +92,12 @@ app.get("/showResults", function(req, res) {
 	});
 });
 
+app.get("*", function(req, res) {
+	res.render("errorpage");
+});
 
-////////////////////////////////////////////////////////////////
+
+///////////////////// Functions to filter out useful data //////////////////////
 
 function calcRatingGraph() {
 	var cnt = 0;
