@@ -1,8 +1,10 @@
 var express = require('express');
 var app = express();
+var port = process.env.PORT || 3000;
 var request = require('request');
 var user;
 var data = {};
+
 
 app.set("view engine", "ejs");
 app.use(express.static('public'));
@@ -183,6 +185,6 @@ function calcVerdictDistrbution() {
 	 }); 
 }
 
-app.listen(3000, function(){
+app.listen(port, function(){
 	console.log("servers up");
 });
